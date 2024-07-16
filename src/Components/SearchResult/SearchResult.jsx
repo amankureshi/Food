@@ -28,7 +28,7 @@ const FoodContainer = styled.section`
   background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)),
     url(https://img.freepik.com/free-photo/top-view-vegan-fast-food-with-copy-space_23-2148290801.jpg?w=826&t=st=1721132235~exp=1721132835~hmac=4dc65d0cae95ed788a4ebaf50310229fdb366b01b08575febf588251df9fd289);
   min-height: calc(100vh - 100px);
-  background-size: 100%;
+  background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
 `;
