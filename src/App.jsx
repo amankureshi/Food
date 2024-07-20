@@ -48,23 +48,75 @@ const App = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const [filterData, setFilterData] = useState(null);
+  const [selectedBtn, setselectedBtn] = useState("all");
   useEffect(() => {
     const fetchFoodData = async () => {
       setLoading(true);
       try {
-        const resposne = await fetch(Base_url);
-        const json = await resposne.json();
+        const response = await fetch(Base_url); // Replace with your API URL
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const json = await response.json();
         setData(json);
-        setLoading(false);
+        setFilterData(json);
       } catch (error) {
         setError("aavse a few minite waite");
+      } finally {
+        setLoading(false);
       }
     };
     fetchFoodData();
   }, []);
+
+  // <-------- Search Food-fuction -------->
+  const searchFood = (e) => {
+    const searchValue = e.target.value;
+    console.log(searchValue);
+    if (searchValue === "") {
+      setFilterData(null);
+    }
+    const filter = data?.filter((food) =>
+      food.name.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    setFilterData(filter);
+  };
+
+  // <-------- Tabs fuction -------->
+  const filterFood = (type) => {
+    if (type === "all") {
+      setFilterData(data);
+      setselectedBtn("all");
+      return;
+    }
+    const filter = data?.filter((food) =>
+      food.type.toLowerCase().includes(type.toLowerCase())
+    );
+    setFilterData(filter);
+    setselectedBtn(type);
+  };
+
+  const filterBtns = [
+    {
+      name: "All",
+      type: "all",
+    },
+    {
+      name: "Breakfast",
+      type: "breakfast",
+    },
+    {
+      name: "Lunch",
+      type: "lunch",
+    },
+    {
+      name: "Dinner",
+      type: "dinner",
+    },
+  ];
+
   console.log(data);
-  // fetchFoodData();
 
   if (error) return <div>{error}</div>;
   if (loading) return <div>Loading......</div>;
@@ -79,17 +131,26 @@ const App = () => {
             </h2>
           </div>
           <div className="search">
-            <input type="text" placeholder="Search Here" />
+            <input
+              onChange={searchFood}
+              type="text"
+              placeholder="Search Here"
+            />
           </div>
         </TopSection>
         <FilterContainer>
-          <Button>All</Button>
-          <Button>Breakfast</Button>
-          <Button>Lunch</Button>
-          <Button>Dinner</Button>
+          {filterBtns.map((value) => (
+            <Button
+              isSelected={selectedBtn === value.type}
+              key={value.name}
+              onClick={() => filterFood(value.type)}
+            >
+              {value.name}
+            </Button>
+          ))}
         </FilterContainer>
       </Container>
-      <SearchResult data={data} />
+      <SearchResult data={filterData} />
     </>
   );
 };
@@ -111,12 +172,22 @@ const Container = styled.div`
     box-shadow: rgb(188, 34, 34) 0px 1px 0px,
       rgba(188, 14, 34, 0.858) 0px 0px 8px;
   }
+  ::placeholder {
+    color: #fff;
+    font-size: 0.3;
+    font-weight: lighter;
+  }
 `;
 const TopSection = styled.section`
   display: flex;
   justify-content: space-between;
   padding: 1rem;
   align-items: center;
+
+  @media (0< width < 600px) {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
 `;
 const FilterContainer = styled.section`
   display: flex;
@@ -127,10 +198,17 @@ const FilterContainer = styled.section`
 
 export const Button = styled.button`
   padding: 6px 1rem;
-  background-color: #dc2828;
+  background-color: ${({ isSelected }) => (isSelected ? "red" : "#db3030")};
   border: none;
   font-size: 1rem;
   border-radius: 1rem;
   margin-bottom: 1rem;
+  cursor: pointer;
+  transition: 0.3s all;
   /* min-width: 70px; */
+  &::after {
+    background-color: #fff;
+    color: black;
+    transition: 0.3s all;
+  }
 `;
