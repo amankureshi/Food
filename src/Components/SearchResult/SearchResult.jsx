@@ -1,20 +1,26 @@
 import styled from "styled-components";
-import { Base_url, Button } from "../../App";
+import { IMG_Detail, Button } from "../../App";
 const SearchResult = ({ data }) => {
   return (
     <FoodContainer>
       <FoodCards>
-        {data?.map(({ name, image, text, price }) => (
-          <FoodCard key={name}>
+        {data?.map((datas, index) => (
+          <FoodCard key={index}>
             <div className="food_image">
-              <img src={Base_url + image} />
+              <img src={IMG_Detail + datas.info.cloudinaryImageId} />
             </div>
             <div className="food_info">
               <div className="info">
-                <h3>{name}</h3>
-                <p>{text}</p>
+                <h3>{datas.info.name}</h3>
+                <p>
+                  <i className="fa-solid fa-star"></i>
+                  {datas.info.avgRating}
+                </p>
+                <span className="cuisines">
+                  {datas.info.cuisines.join(", ")}
+                </span>
               </div>
-              <Button>${price.toFixed(2)}</Button>
+              <Button>{datas.info.costForTwo}</Button>
             </div>
           </FoodCard>
         ))}
@@ -44,17 +50,48 @@ const FoodCards = styled.div`
 `;
 const FoodCard = styled.div`
   backdrop-filter: blur(5px);
-  width: 340px;
-  height: 170px;
+  width: 240px;
+  height: 370px;
   border: 2px solid #939292;
   border-radius: 10px;
-  display: flex;
-  padding: 5px;
+  /* display: flex; */
 
   .food_info {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    align-items: end;
+    align-items: center;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  .food_info p {
+    text-align: center;
+    font-family: "Playwrite BE WAL", cursive;
+  }
+  .food_info i {
+    background-color: green;
+    border-radius: 50%;
+    padding: 4px;
+    font-size: 12px;
+    margin-right: 4px;
+    color: #fff;
+  }
+  .food_info .cuisines {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 400;
+    line-height: 19px;
+    color: rgba(201, 206, 214, 0.788);
+    overflow: hidden;
+    width: 100%;
+  }
+  .food_image img {
+    width: 100%;
+    object-fit: cover;
+    border-radius: 9px 9px 0 0;
+    aspect-ratio: 3/3;
   }
 `;

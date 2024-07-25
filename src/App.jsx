@@ -3,46 +3,11 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import SearchResult from "./Components/SearchResult/SearchResult";
 
-// const Base_url =
-//   "https://www.swiggy.com/dapi/restaurants/list/v5?lat=23.022505&lng=72.5713621&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING";
+export const IMG_Detail =
+  "https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_300,h_300,c_fit/";
 
-// const App = () => {
-//   const [data, setData] = useState(null);
-//   const [loading, setLoading] = useState(false);
-//   const fetchFoodData = async () => {
-//     const resposne = await fetch(Base_url);
-//     const json = await resposne.json();
-//     console.log(json.data?.cards[1]);
-//   };
-//   fetchFoodData();
-//   return (
-//     <Container>
-//       <TopSection>
-//         <div className="logo">
-//           <h2>
-//             <span className="logo-name">A</span>man F
-//             <span className="logo-name">oo</span>diee
-//           </h2>
-//         </div>
-//         <div className="search">
-//           <input type="text" placeholder="Search Here" />
-//         </div>
-//       </TopSection>
-//       <FilterContainer>
-//         <Button>All</Button>
-//         <Button>Breakfast</Button>
-//         <Button>Lunch</Button>
-//         <Button>Dinner</Button>
-//       </FilterContainer>
-
-//       <FoodContainer>
-//         <FoodCards></FoodCards>
-//       </FoodContainer>
-//     </Container>
-//   );
-// };
-
-export const Base_url = "http://localhost:9000";
+export const Base_url =
+  "https://www.swiggy.com/dapi/restaurants/list/v5?lat=23.022505&lng=72.5713621&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING";
 
 const App = () => {
   const [data, setData] = useState(null);
@@ -50,6 +15,8 @@ const App = () => {
   const [error, setError] = useState(null);
   const [filterData, setFilterData] = useState(null);
   const [selectedBtn, setselectedBtn] = useState("all");
+
+  //console.log("123", filterData);
   useEffect(() => {
     const fetchFoodData = async () => {
       setLoading(true);
@@ -59,8 +26,12 @@ const App = () => {
           throw new Error("Network response was not ok");
         }
         const json = await response.json();
-        setData(json);
-        setFilterData(json);
+        const fetchedRestaurants =
+          json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle
+            ?.restaurants;
+        // console.log(fetchedRestaurants);
+        setData(fetchedRestaurants);
+        setFilterData(fetchedRestaurants);
       } catch (error) {
         setError("aavse a few minite waite");
       } finally {
@@ -73,17 +44,17 @@ const App = () => {
   // <-------- Search Food-fuction -------->
   const searchFood = (e) => {
     const searchValue = e.target.value;
-    console.log(searchValue);
+    //console.log(searchValue);
     if (searchValue === "") {
       setFilterData(null);
     }
     const filter = data?.filter((food) =>
-      food.name.toLowerCase().includes(searchValue.toLowerCase())
+      food.info.name.toLowerCase().includes(searchValue.toLowerCase())
     );
     setFilterData(filter);
   };
 
-  // <-------- Tabs fuction -------->
+  // // <-------- Tabs fuction -------->
   const filterFood = (type) => {
     if (type === "all") {
       setFilterData(data);
@@ -91,7 +62,7 @@ const App = () => {
       return;
     }
     const filter = data?.filter((food) =>
-      food.type.toLowerCase().includes(type.toLowerCase())
+      food.info.type.toLowerCase().includes(type.toLowerCase())
     );
     setFilterData(filter);
     setselectedBtn(type);
@@ -116,7 +87,7 @@ const App = () => {
     },
   ];
 
-  console.log(data);
+  //console.log(data);
 
   if (error) return <div>{error}</div>;
   if (loading) return <div>Loading......</div>;
@@ -156,6 +127,9 @@ const App = () => {
 };
 
 export default App;
+
+// -----------------------------CSS Part-------------------------------------------
+
 const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
