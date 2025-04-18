@@ -29,7 +29,7 @@ const App = () => {
         const fetchedRestaurants =
           json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle
             ?.restaurants;
-        // console.log(fetchedRestaurants);
+        console.log(fetchedRestaurants);
         setData(fetchedRestaurants);
         setFilterData(fetchedRestaurants);
       } catch (error) {
@@ -168,6 +168,13 @@ const FilterContainer = styled.section`
   align-items: center;
   justify-content: center;
   gap: 1rem;
+  @media (max-width: 550px) {
+    button {
+      width: 5rem;
+      padding: 7px 5px;
+      font-size: 14px;
+    }
+  }
 `;
 
 export const Button = styled.button`
